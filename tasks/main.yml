@@ -1,0 +1,38 @@
+---
+- name: Includes dynamic configuration file
+  include_vars: "{{ vars_files }}"
+  when: vars_files is defined
+
+- name: mount_network_fs | Install base packages
+  apt: 
+    pkg: "{{ item }}"
+    state: present
+  with_items:
+    - nfs-common
+
+- name: mount_network_fs | Umount NFS share
+  mount:
+    name: "{{ network_fs_base_directory }}/{{ network_fs_mount_directory }}"
+    src: "{{ network_fs_nfs_hostname }}:{{ network_fs_nfs_directory }}"
+    fstype: 'nfs4'
+    opts: 'proto=tcp,port=2049,_netdev'
+    state: 'unmounted'
+  when: network_fs_mount_type == "nfs" and network_fs_active == false
+
+- name: mount_network_fs | Check host and port is ready
+  local_action:
+    module: wait_for
+      host={{ network_fs_nfs_hostname }}
+      port=2049
+      delay=1
+      timeout=10
+
+- name: mount_network_fs | Mount NFS share
+  mount:
+    name: "{{ network_fs_base_directory }}/{{ network_fs_mount_directory }}"
+    src: "{{ network_fs_nfs_hostname }}:{{ network_fs_nfs_directory }}"
+    fstype: 'nfs4'
+    opts: 'proto=tcp,port=2049,_netdev'
+    state: 'mounted'
+  when: network_fs_mount_type == "nfs" and network_fs_active == true
+
