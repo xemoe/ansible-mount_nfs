@@ -1,0 +1,20 @@
+---
+- name: setup::nfs_server
+  hosts: thirdbox
+  gather_facts: yes
+  become: yes
+  vars:
+    apt_proxy: 192.168.1.155:3142
+    ferm__enabled: no
+    nfs_allow: [ '192.168.1.0/24', '172.100.0.0/24' ]
+    nfs_default_path: "/srv/nfs"
+  roles:
+    - role: xemoe.apt-cacher-ng-client
+      tags: 
+        - "setup-nfs-server"
+    - role: debops.core
+      tags: 
+        - "setup-nfs-server"
+    - role: debops.nfs
+      tags: 
+        - "setup-nfs-server"

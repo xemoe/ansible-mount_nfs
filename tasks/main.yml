@@ -12,7 +12,7 @@
 
 - name: mount_network_fs | Umount NFS share
   mount:
-    name: "{{ network_fs_base_directory }}/{{ network_fs_mount_directory }}"
+    name: "{{ network_fs_base_directory }}/{{ network_fs_nfs_hostname }}/{{ network_fs_mount_directory }}"
     src: "{{ network_fs_nfs_hostname }}:{{ network_fs_nfs_directory }}"
     fstype: 'nfs4'
     opts: 'proto=tcp,port=2049,_netdev'
@@ -26,10 +26,11 @@
       port=2049
       delay=1
       timeout=10
+  when: false
 
 - name: mount_network_fs | Mount NFS share
   mount:
-    name: "{{ network_fs_base_directory }}/{{ network_fs_mount_directory }}"
+    name: "{{ network_fs_base_directory }}/{{ network_fs_nfs_hostname }}/{{ network_fs_mount_directory }}"
     src: "{{ network_fs_nfs_hostname }}:{{ network_fs_nfs_directory }}"
     fstype: 'nfs4'
     opts: 'proto=tcp,port=2049,_netdev'

@@ -1,0 +1,9 @@
+---
+- name: testing::mount_nfs
+  hosts: mainbox
+  become: yes
+  vars_files:
+    - mount_nfs.yml
+  roles:
+    - role: xemoe.mount_nfs
+
