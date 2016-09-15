@@ -13,7 +13,7 @@
 - name: mount_network_fs | Umount NFS share
   mount:
     name: "{{ network_fs_base_directory }}/{{ network_fs_nfs_hostname }}/{{ network_fs_mount_directory }}"
-    src: "{{ network_fs_nfs_hostname }}:{{ network_fs_nfs_directory }}"
+    src: "{{ network_fs_nfs_hostname }}:{{ network_fs_nfs_directory | regex_replace('^/', '') }}"
     fstype: 'nfs4'
     opts: 'proto=tcp,port=2049,_netdev'
     state: 'unmounted'
@@ -31,7 +31,7 @@
 - name: mount_network_fs | Mount NFS share
   mount:
     name: "{{ network_fs_base_directory }}/{{ network_fs_nfs_hostname }}/{{ network_fs_mount_directory }}"
-    src: "{{ network_fs_nfs_hostname }}:{{ network_fs_nfs_directory }}"
+    src: "{{ network_fs_nfs_hostname }}:{{ network_fs_nfs_directory | regex_replace('^/', '') }}"
     fstype: 'nfs4'
     opts: 'proto=tcp,port=2049,_netdev'
     state: 'mounted'
