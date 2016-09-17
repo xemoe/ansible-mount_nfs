@@ -1,0 +1,3 @@
+---
+- name: mount_network_fs - notify | Mount all
+  shell: "mount -T {{ network_fs_fstab_file }} --all"

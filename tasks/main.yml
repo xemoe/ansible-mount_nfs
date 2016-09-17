@@ -20,16 +20,24 @@
     name: "{{ __mount_to }}"
     src: "{{ __mount_src }}"
     fstype: 'nfs4'
+    fstab: "{{ network_fs_fstab_file }}"
     opts: "{{ __mount_options | join(',') }}"
-    state: 'unmounted'
+    state: 'absent'
   when: network_fs_mount_type == "nfs" and network_fs_active == false
 
-- name: mount_network_fs | Mount NFS share
+- name: mount_network_fs | Create NFS mount directory 
+  file:
+    name: "{{ __mount_to }}"
+    state: 'directory'
+  when: network_fs_mount_type == "nfs" and network_fs_active == true
+
+- name: mount_network_fs | Update NFS mount fstab file 
   mount:
     name: "{{ __mount_to }}"
     src: "{{ __mount_src }}"
     fstype: 'nfs4'
+    fstab: "{{ network_fs_fstab_file }}"
     opts: "{{ __mount_options | join(',') }}"
-    state: 'mounted'
+    state: 'present'
   when: network_fs_mount_type == "nfs" and network_fs_active == true
-
+  notify: mount_network_fs -notify | Mount all

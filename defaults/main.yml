@@ -9,3 +9,4 @@ network_fs_nfs_hostname: ""
 network_fs_nfs_directory: ""
 network_fs_nfs_options: []
 network_fs_active: false
+network_fs_fstab_file: /opt/system-config.d/fstab
