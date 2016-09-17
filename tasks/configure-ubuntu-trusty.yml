@@ -1,0 +1,35 @@
+---
+- set_fact:
+    __mount_options: "{{ network_fs_nfs_options + network_fs_mount_options }}"
+    __mount_to: "{{ network_fs_base_directory }}/{{ network_fs_nfs_hostname }}/{{ network_fs_mount_directory }}"
+    __mount_src: "{{ network_fs_nfs_hostname }}:{{ network_fs_nfs_directory | regex_replace('^/', '') }}"
+
+- name: mount_network_fs | Umount NFS share
+  mount:
+    name: "{{ __mount_to }}"
+    src: "{{ __mount_src }}"
+    fstype: 'nfs4'
+    opts: "{{ __mount_options | join(',') }}"
+    state: 'absent'
+  when: network_fs_mount_type == "nfs" and network_fs_active == false
+
+- name: mount_network_fs | Create NFS mount directory 
+  file:
+    name: "{{ __mount_to }}"
+    state: 'directory'
+  when: network_fs_mount_type == "nfs" and network_fs_active == true
+
+- name: mount_network_fs | Update NFS mount fstab file 
+  mount:
+    name: "{{ __mount_to }}"
+    src: "{{ __mount_src }}"
+    fstype: 'nfs4'
+    opts: "{{ __mount_options | join(',') }}"
+    state: 'present'
+  when: network_fs_mount_type == "nfs" and network_fs_active == true
+
+- name: mount_network_fs | Unmount all
+  shell: "umount -t nfs4 --all"
+
+- name: mount_network_fs | Mount all
+  shell: "mount -t nfs4 --all"
