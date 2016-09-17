@@ -45,4 +45,4 @@
   shell: "umount -t nfs4 --all"
 
 - name: mount_network_fs | Mount all
-  shell: "mount -T {{ network_fs_fstab_file }} --all"
+  shell: "mount -t nfs4 -T {{ network_fs_fstab_file }} --all"
