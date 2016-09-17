@@ -10,30 +10,26 @@
   with_items:
     - nfs-common
 
+- set_fact:
+    __mount_options: "{{ network_fs_nfs_options + network_fs_mount_options }}"
+    __mount_to: "{{ network_fs_base_directory }}/{{ network_fs_nfs_hostname }}/{{ network_fs_mount_directory }}"
+    __mount_src: "{{ network_fs_nfs_hostname }}:{{ network_fs_nfs_directory | regex_replace('^/', '') }}"
+
 - name: mount_network_fs | Umount NFS share
   mount:
-    name: "{{ network_fs_base_directory }}/{{ network_fs_nfs_hostname }}/{{ network_fs_mount_directory }}"
-    src: "{{ network_fs_nfs_hostname }}:{{ network_fs_nfs_directory | regex_replace('^/', '') }}"
+    name: "{{ __mount_to }}"
+    src: "{{ __mount_src }}"
     fstype: 'nfs4'
-    opts: 'proto=tcp,port=2049,_netdev'
+    opts: "{{ __mount_options | join(',') }}"
     state: 'unmounted'
   when: network_fs_mount_type == "nfs" and network_fs_active == false
 
-- name: mount_network_fs | Check host and port is ready
-  local_action:
-    module: wait_for
-      host={{ network_fs_nfs_hostname }}
-      port=2049
-      delay=1
-      timeout=10
-  when: false
-
 - name: mount_network_fs | Mount NFS share
   mount:
-    name: "{{ network_fs_base_directory }}/{{ network_fs_nfs_hostname }}/{{ network_fs_mount_directory }}"
-    src: "{{ network_fs_nfs_hostname }}:{{ network_fs_nfs_directory | regex_replace('^/', '') }}"
+    name: "{{ __mount_to }}"
+    src: "{{ __mount_src }}"
     fstype: 'nfs4'
-    opts: 'proto=tcp,port=2049,_netdev'
+    opts: "{{ __mount_options | join(',') }}"
     state: 'mounted'
   when: network_fs_mount_type == "nfs" and network_fs_active == true
 
