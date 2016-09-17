@@ -40,4 +40,9 @@
     opts: "{{ __mount_options | join(',') }}"
     state: 'present'
   when: network_fs_mount_type == "nfs" and network_fs_active == true
-  notify: mount_network_fs - notify | Mount all
+
+- name: mount_network_fs | Unmount all
+  shell: "umount -t nfs4 --all"
+
+- name: mount_network_fs | Mount all
+  shell: "mount -T {{ network_fs_fstab_file }} --all"
