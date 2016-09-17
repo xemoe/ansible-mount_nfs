@@ -40,4 +40,4 @@
     opts: "{{ __mount_options | join(',') }}"
     state: 'present'
   when: network_fs_mount_type == "nfs" and network_fs_active == true
-  notify: mount_network_fs -notify | Mount all
+  notify: mount_network_fs - notify | Mount all
