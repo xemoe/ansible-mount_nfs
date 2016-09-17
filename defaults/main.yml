@@ -1,5 +1,6 @@
 network_fs_base_directory: /mnt/network_fs
 network_fs_mount_type: nfs
+network_fs_fs_type: nfs4
 network_fs_mount_directory: nfs
 network_fs_mount_options:
   - "proto=tcp"
